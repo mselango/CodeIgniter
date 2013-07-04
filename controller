@@ -1,0 +1,44 @@
+<?php
+
+class mypay3 extends CI_Controller {
+
+  
+
+function __Construct()
+{	
+	
+	 parent::__construct();
+}
+
+public function index()
+{	
+		$data=array();
+		$this->load->library('paypal_lib');
+	    $config['paypal_cmd'] = '_xclick-subscriptions';
+        $this->paypal_lib->initialize($config); //set paypal cmd for subscriptions
+        
+        $subscription = array('a3' => '300',
+                              'p3' => '1',
+                              't3' => 'Y',
+                              'src'=> '1'
+                            );
+        
+        $this->paypal_lib->add_field('item_name','Membership');
+        $this->paypal_lib->add_field('business', 'ela@cg.com');
+        $this->paypal_lib->button('Subscribe');
+        $this->paypal_lib->add_subscription($subscription); //add array of subscription values
+        
+        $this->paypal_lib->add_field('return', 'http://172.16.0.20:1002/CodeIgniter_2.1.3/mypay3/success/success');
+        $this->paypal_lib->add_field('cancel_return', 'http://172.16.0.20:1002/CodeIgniter_2.1.3/mypay3/success/failure');
+        $this->paypal_lib->add_field('notify_url', 'http://localhost/CodeIgniter_2.1.3/mypay3/ipn');
+                
+        $this->paypal_lib->paypal_form(); 
+        $this->paypal_lib->paypal_auto_form();
+}
+
+public function success()
+{
+	echo "success";
+}
+
+}
